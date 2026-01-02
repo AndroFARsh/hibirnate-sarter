@@ -2,7 +2,9 @@ package com.farshonok.dao
 
 import com.farshonok.entities.*
 import com.farshonok.entities.QCompany.Companion.company
+import com.farshonok.entities.QPayment.Companion.payment
 import com.farshonok.entities.QUser.Companion.user
+import com.querydsl.core.Tuple
 import com.querydsl.jpa.impl.JPAQuery
 import org.hibernate.Session
 
@@ -45,100 +47,54 @@ class QueryDslUserDao : UserDao {
         session: Session,
         companyName: String
     ): List<Payment> {
-        val cb = session.criteriaBuilder
-
-        val criteria = cb.createQuery(Payment::class.java)
-
-        val payment = criteria.from(Payment::class.java)
-        val user = payment.join(Payment_.receiver)
-        val company = user.join(User_.company)
-
-        criteria
+        return JPAQuery<Payment>(session)
             .select(payment)
-            .where(cb.equal(company.get(Company_.name), companyName))
-            .orderBy(
-                cb.asc(user.get(User_.firstName)),
-                cb.asc(payment.get(Payment_.amount))
-            )
-
-        return session
-            .createQuery(criteria)
-            .list()
+            .from(company)
+            .innerJoin( company.users, user)
+            .innerJoin(user.payments, payment)
+            .where(company.name.eq(companyName))
+            .orderBy(user.firstName.asc(), payment.amount.asc())
+            .fetch()
     }
 
     override fun findAveragePaymentAmountByFirstAndLastNames(
         session: Session,
         firstName: String,
         lastName: String
-    ): Double {
-        val cb = session.criteriaBuilder
-        val criteria = cb.createQuery(Double::class.java)
-
-        val payment = criteria.from(Payment::class.java)
-        val user = payment.join(Payment_.receiver)
-
-        criteria
-            .select(cb.avg(payment.get(Payment_.amount)))
-            .where(
-                cb.and(
-                    cb.equal(user.get(User_.firstName), firstName),
-                    cb.equal(user.get(User_.lastName), lastName),
-                )
-            )
-
-        return session
-            .createQuery(criteria)
-            .uniqueResult()
-    }
-
-    override fun findCompanyNamesWithAvgUserPaymentsOrderedByCompanyName(session: Session): List<Array<Any>> {
-        val cb = session.criteriaBuilder
-        val criteria = cb.createQuery(Array<Any>::class.java)
-
-        val company = criteria.from(Company::class.java)
-        val users = company.join(Company_.users)
-        val payments = users.join(User_.payments)
-
-        criteria.select(
-            cb.array(
-                company.get(Company_.name),
-                cb.avg(payments.get(Payment_.amount))
-            )
+    ): Double = JPAQuery<Double>(session)
+        .select(payment.amount.avg())
+        .from(user)
+        .innerJoin(user.payments, payment)
+        .where(
+            user.firstName.eq(firstName),
+            user.lastName.eq(lastName)
         )
-            .groupBy(company.get(Company_.name))
-            .orderBy(cb.asc(company.get(Company_.name)))
+        .fetchOne() ?: 0.0
 
-        return session
-            .createQuery(criteria)
-            .list()
-    }
+    override fun findCompanyNamesWithAvgUserPaymentsOrderedByCompanyName(session: Session): List<Array<Any>> = JPAQuery<Tuple>(session)
+        .select(company.name, payment.amount.avg())
+        .from(company)
+        .innerJoin(company.users, user)
+        .innerJoin(user.payments, payment)
+        .groupBy(company.name)
+        .orderBy(company.name.asc())
+        .fetch()
+        .map { it.toArray() }
 
     override fun isItPossible(session: Session): List<Array<Any>> {
-        val cb = session.criteriaBuilder
-
-        val criteria = cb.createQuery(Array<Any>::class.java)
-        val user = criteria.from(User::class.java)
-        val payments = user.join(User_.payments)
-
-        val subquery = criteria.subquery(Double::class.java)
-        val paymentSubquery = subquery.from(Payment::class.java)
-
-        criteria.select(
-            cb.array(
-                user, cb.avg(payments.get(Payment_.amount)),
-            )
-        )
+        return JPAQuery<Tuple>(session)
+            .select(user, payment.amount.avg())
+            .from(user)
+            .join(user.payments, payment)
             .groupBy(user)
-            .having(
-                cb.greaterThan(
-                    cb.avg(payments.get(Payment_.amount)),
-                    subquery.select(cb.avg(paymentSubquery.get(Payment_.amount)))
+            .having(payment.amount.avg().gt(
+                JPAQuery<Double>(session)
+                    .select(payment.amount.avg())
+                    .from(payment)
                 )
             )
-            .orderBy(cb.asc(user.get(User_.firstName)))
-
-        return session
-            .createQuery(criteria)
-            .list()
+            .orderBy(user.firstName.asc()   )
+            .fetch()
+            .map { it.toArray() }
     }
 }
