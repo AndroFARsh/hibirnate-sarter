@@ -37,7 +37,7 @@ class QueryDslUserDao : UserDao {
     ): List<User> = JPAQuery<User>(session)
         .select(user)
         .from(company)
-        .join(company.users)
+        .innerJoin( company.users, user)
         .where(company.name.eq(companyName))
         .fetch()
 
