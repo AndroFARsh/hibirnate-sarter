@@ -38,6 +38,11 @@ interface UserDao {
     fun findAveragePaymentAmountByFirstAndLastNames(session: Session, firstName: String, lastName: String): Double
 
     /**
+     * Returns the average salary with the specified filter
+     */
+    fun findAveragePaymentByFilter(session: Session, filter: PaymentFilter): Double
+
+    /**
      * Returns, for each company: the company name and the average salary of all its employees.
      * Companies are ordered by company name.
      */

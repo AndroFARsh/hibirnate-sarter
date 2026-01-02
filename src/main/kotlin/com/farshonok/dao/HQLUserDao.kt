@@ -2,6 +2,7 @@ package com.farshonok.dao
 
 import com.farshonok.entities.Payment
 import com.farshonok.entities.User
+import com.querydsl.core.Tuple
 import org.hibernate.Session
 
 class HQLUserDao : UserDao {
@@ -78,6 +79,29 @@ class HQLUserDao : UserDao {
             setParameter("lastName", lastName)
         }
         .uniqueResult()
+
+    override fun findAveragePaymentByFilter(
+        session: Session,
+        filter: PaymentFilter
+    ): Double {
+        val predicate = mutableMapOf<String, Pair<String, String>>()
+        filter.firstName?.let { predicate.put("firstName", "u.firstName = :firstName" to it) }
+        filter.lastName?.let { predicate.put("lastName", "u.lastName = :lastName" to it) }
+
+        val where = predicate
+            .map { it.value.first }
+            .joinToString(
+                separator = " and ",
+                prefix = if (predicate.isNotEmpty()) "join p.receiver u where " else ""
+            )
+
+        return session.createQuery("""
+            select avg(p.amount) from Payment p
+            $where
+        """, Double::class.java).apply {
+            predicate.forEach { setParameter(it.key, it.value.second) }
+        }.uniqueResult()
+    }
 
     override fun findCompanyNamesWithAvgUserPaymentsOrderedByCompanyName(session: Session): List<Array<Any>> =
         session.createQuery(

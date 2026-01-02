@@ -108,6 +108,29 @@ class HQLUserDaoTest {
     }
 
     @Test
+    fun findAveragePaymentByFilter() = sessionFactory.openSession().use { session ->
+        val transaction = session.beginTransaction()
+
+        val averagePaymentAmount1 =
+            userDao.findAveragePaymentByFilter(session, PaymentFilter(firstName = "Bill"))
+        assertThat(averagePaymentAmount1).isEqualTo(300.0)
+
+        val averagePaymentAmount2 =
+            userDao.findAveragePaymentByFilter(session, PaymentFilter(lastName = "Gates"))
+        assertThat(averagePaymentAmount2).isEqualTo(300.0)
+
+        val averagePaymentAmount3 =
+            userDao.findAveragePaymentByFilter(session, PaymentFilter(firstName = "Bill", lastName = "Gates"))
+        assertThat(averagePaymentAmount3).isEqualTo(300.0)
+
+        val averagePaymentAmount4 =
+            userDao.findAveragePaymentByFilter(session, PaymentFilter())
+        assertThat(averagePaymentAmount4).isEqualTo(382.14285714285717)
+
+        transaction.commit()
+    }
+
+    @Test
     @Suppress("CAST_NEVER_SUCCEEDS")
     fun findCompanyNamesWithAvgUserPaymentsOrderedByCompanyName() = sessionFactory.openSession().use { session ->
         val transaction = session.beginTransaction()

@@ -5,6 +5,7 @@ import com.farshonok.entities.QCompany.Companion.company
 import com.farshonok.entities.QPayment.Companion.payment
 import com.farshonok.entities.QUser.Companion.user
 import com.querydsl.core.Tuple
+import com.querydsl.core.types.Predicate
 import com.querydsl.jpa.impl.JPAQuery
 import org.hibernate.Session
 
@@ -70,6 +71,22 @@ class QueryDslUserDao : UserDao {
             user.lastName.eq(lastName)
         )
         .fetchOne() ?: 0.0
+
+    override fun findAveragePaymentByFilter(
+        session: Session,
+        filter: PaymentFilter
+    ): Double {
+        val predicates = mutableListOf<Predicate>()
+        filter.firstName?.let { predicates.add(user.firstName.eq(it)) }
+        filter.lastName?.let { predicates.add(user.lastName.eq(it)) }
+
+        return JPAQuery<Double>(session)
+            .select(payment.amount.avg())
+            .from(user)
+            .innerJoin(user.payments, payment)
+            .where(*predicates.toTypedArray())
+            .fetchOne() ?: 0.0
+    }
 
     override fun findCompanyNamesWithAvgUserPaymentsOrderedByCompanyName(session: Session): List<Array<Any>> = JPAQuery<Tuple>(session)
         .select(company.name, payment.amount.avg())

@@ -1,6 +1,7 @@
 package com.farshonok.dao
 
 import com.farshonok.entities.*
+import jakarta.persistence.criteria.Predicate
 import org.hibernate.Session
 
 class CriteriaApiUserDao : UserDao {
@@ -112,6 +113,29 @@ class CriteriaApiUserDao : UserDao {
                 cb.equal(user.get(User_.firstName), firstName),
                 cb.equal(user.get(User_.lastName), lastName),
             ))
+
+        return session
+            .createQuery(criteria)
+            .uniqueResult()
+    }
+
+    override fun findAveragePaymentByFilter(
+        session: Session,
+        filter: PaymentFilter
+    ): Double {
+        val cb = session.criteriaBuilder
+        val criteria = cb.createQuery(Double::class.java)
+
+        val payment = criteria.from(Payment::class.java)
+        val user = payment.join(Payment_.receiver)
+
+        val predicates = mutableListOf<Predicate>()
+        filter.firstName?.let { predicates.add(cb.equal(user.get(User_.firstName), it)) }
+        filter.lastName?.let { predicates.add(cb.equal(user.get(User_.lastName), it)) }
+
+        criteria
+            .select(cb.avg(payment.get(Payment_.amount)))
+            .where(predicates)
 
         return session
             .createQuery(criteria)
