@@ -14,9 +14,11 @@ import jakarta.persistence.NamedEntityGraph
 import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import org.hibernate.Session
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.FetchProfile
+import org.hibernate.graph.RootGraph
 
 @NamedEntityGraph(
     name = "GraphWithCompanyAndChats",
@@ -61,4 +63,15 @@ data class User(
     @OneToMany(mappedBy = "receiver")
     @Fetch(FetchMode.SUBSELECT)
     val payments: MutableList<Payment> = mutableListOf()
+}
+
+
+fun Session.createGraphWithCompanyAndChats() : RootGraph<User> {
+    val graph = createEntityGraph(User::class.java)
+    graph.addAttributeNodes(User_.COMPANY, User_.USER_CHATS)
+
+    val subgraph = graph.addSubgraph(User_.USER_CHATS, UserChat::class.java)
+    subgraph.addAttributeNodes(UserChat_.CHAT)
+
+    return graph;
 }
