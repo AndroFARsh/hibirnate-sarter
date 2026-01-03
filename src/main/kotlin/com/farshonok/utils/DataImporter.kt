@@ -1,16 +1,19 @@
-package com.farshonok.com.farshonok.utils
+package com.farshonok.utils
 
 import com.farshonok.entities.Birthday
+import com.farshonok.entities.Chat
 import com.farshonok.entities.Company
 import com.farshonok.entities.Payment
 import com.farshonok.entities.User
+import com.farshonok.entities.UserChat
+import com.farshonok.entities.User_
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import java.time.LocalDate
 import java.time.Month
 
 
-fun SessionFactory.fillTestData() = openSession().use { session ->
+fun SessionFactory.fillDatabase() = openSession().use { session ->
     val transaction = session.beginTransaction()
 
     val microsoft = session.createCompany( "Microsoft")
@@ -57,6 +60,22 @@ fun SessionFactory.fillTestData() = openSession().use { session ->
     session.createPayment( dianeGreene, 300)
     session.createPayment( dianeGreene, 300)
 
+    val googleCoChat = session.createChat( "Google CO")
+    val appleCoChat = session.createChat( "Apple CO")
+    val coChat = session.createChat( "CO")
+
+    session.linkChatAndUser(googleCoChat, sergeyBrin)
+    session.linkChatAndUser(googleCoChat, dianeGreene)
+
+    session.linkChatAndUser(appleCoChat,steveJobs)
+    session.linkChatAndUser(appleCoChat, timCook)
+
+    session.linkChatAndUser(coChat, sergeyBrin)
+    session.linkChatAndUser(coChat, dianeGreene)
+    session.linkChatAndUser(coChat,steveJobs)
+    session.linkChatAndUser(coChat, timCook)
+    session.linkChatAndUser(coChat, billGates)
+
     transaction.commit()
 }
 
@@ -82,8 +101,18 @@ private fun Session.createUser(
     persist(this)
 }
 
-
 private fun Session.createPayment(user: User, amount: Int) = Payment(receiver = user, amount = amount).apply {
     user.payments.add(this)
+    persist(this)
+}
+
+private fun Session.createChat(name: String) = Chat(name = name).apply {
+    persist(this)
+}
+
+private fun Session.linkChatAndUser(chat: Chat, user: User) = UserChat(user = user, chat = chat).apply {
+    user.userChats.add(this)
+    chat.userChats.add(this)
+
     persist(this)
 }

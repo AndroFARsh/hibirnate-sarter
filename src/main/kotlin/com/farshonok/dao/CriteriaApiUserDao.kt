@@ -11,6 +11,7 @@ class CriteriaApiUserDao : UserDao {
 
         val user = criteria.from(User::class.java)
         criteria.select(user)
+        user.fetch(User_.company)
 
         return session
             .createQuery(criteria)

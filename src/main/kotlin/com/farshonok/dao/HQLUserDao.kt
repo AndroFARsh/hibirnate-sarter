@@ -2,12 +2,14 @@ package com.farshonok.dao
 
 import com.farshonok.entities.Payment
 import com.farshonok.entities.User
-import com.querydsl.core.Tuple
 import org.hibernate.Session
 
 class HQLUserDao : UserDao {
     override fun findAll(session: Session): List<User> =
-        session.createQuery("select u from User u", User::class.java)
+        session.createQuery("""
+            select u from User u
+            join fetch u.company
+        """, User::class.java)
             .list()
 
     override fun findAllByFirstName(

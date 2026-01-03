@@ -12,7 +12,8 @@ import org.hibernate.Session
 class QueryDslUserDao : UserDao {
     override fun findAll(session: Session): List<User> = JPAQuery<User>(session)
         .select(user)
-        .from(user)
+        .from(company)
+        .join(company.users, user)
         .fetch()
 
     override fun findAllByFirstName(

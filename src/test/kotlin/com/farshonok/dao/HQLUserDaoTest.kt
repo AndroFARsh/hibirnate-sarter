@@ -1,6 +1,6 @@
 package com.farshonok.dao
 
-import com.farshonok.com.farshonok.utils.fillTestData
+import com.farshonok.utils.fillDatabase
 import com.farshonok.com.farshonok.utils.createTestSessionFactory
 import com.farshonok.entities.Payment
 import com.farshonok.entities.User
@@ -16,7 +16,7 @@ class HQLUserDaoTest {
 
     @BeforeEach
     fun setup() {
-        sessionFactory.fillTestData()
+        sessionFactory.fillDatabase()
         userDao = HQLUserDao()
     }
 
