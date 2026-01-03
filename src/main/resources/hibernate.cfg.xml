@@ -14,7 +14,7 @@
       <property name="show_sql">true</property>
       <property name="format_sql">true</property>
 
-      <property name="hibernate.hbm2ddl.auto">validate</property>
+      <property name="hibernate.hbm2ddl.auto">create</property>
 
 <!--      <mapping class="com.farshonok.entities.User" />-->
 <!--      <mapping class="com.farshonok.entities.Company" />-->
