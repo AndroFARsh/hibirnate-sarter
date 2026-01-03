@@ -1,12 +1,41 @@
 package com.farshonok.entities
 
-import com.farshonok.convertes.BirthdayConverter
 import com.querydsl.core.annotations.PropertyType
 import com.querydsl.core.annotations.QueryType
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedSubgraph
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
+import org.hibernate.annotations.FetchProfile
 
+@NamedEntityGraph(
+    name = "GraphWithCompanyAndChats",
+    attributeNodes = [
+        NamedAttributeNode("company"),
+        NamedAttributeNode("userChats", subgraph = "chats"),
+    ],
+    subgraphs = [
+        NamedSubgraph("chats", attributeNodes = [ NamedAttributeNode("chat") ])
+    ]
+)
+@FetchProfile(
+    name = "ProfileWithCompanyAndChats",
+    fetchOverrides = [
+        FetchProfile.FetchOverride(entity = User::class, association = "company"),
+        FetchProfile.FetchOverride(entity = User::class, association = "userChats", mode = FetchMode.SELECT),
+        FetchProfile.FetchOverride(entity = UserChat::class, association = "chat"),
+    ],
+)
 @Entity
 @Table(name = "users", schema = "public")
 data class User(
