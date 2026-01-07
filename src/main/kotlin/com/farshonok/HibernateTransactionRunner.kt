@@ -13,10 +13,10 @@ fun main() {
             session1.beginTransaction()
             session2.beginTransaction()
 
-            val payment = session1.find(Payment::class.java, 1, LockMode.OPTIMISTIC)
+            val payment = session1.find(Payment::class.java, 1)
             payment.amount += 10
 
-            val samePayment = session2.find(Payment::class.java, 1, LockMode.OPTIMISTIC)
+            val samePayment = session2.find(Payment::class.java, 1)
             samePayment.amount += 100
 
             session1.transaction.commit()

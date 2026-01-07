@@ -10,13 +10,15 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Version
 import org.hibernate.LockMode
+import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.OptimisticLock
 import org.hibernate.annotations.OptimisticLockType
 import org.hibernate.annotations.OptimisticLocking
 import javax.lang.model.SourceVersion
 
 @Entity
-@OptimisticLocking(type = OptimisticLockType.VERSION)
+@OptimisticLocking(type = OptimisticLockType.ALL)
+@DynamicUpdate
 class Payment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +30,8 @@ class Payment(
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
     var receiver: User,
-) {
-    @Version
-    private val version: Long = 0
-}
+)
+//{
+//    @Version
+//    private val version: Long = 0
+//}
