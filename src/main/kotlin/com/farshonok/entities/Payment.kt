@@ -1,20 +1,10 @@
 package com.farshonok.entities
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Version
-import org.hibernate.LockMode
+import jakarta.persistence.*
 import org.hibernate.annotations.DynamicUpdate
-import org.hibernate.annotations.OptimisticLock
 import org.hibernate.annotations.OptimisticLockType
 import org.hibernate.annotations.OptimisticLocking
-import javax.lang.model.SourceVersion
+import java.time.Instant
 
 @Entity
 @OptimisticLocking(type = OptimisticLockType.ALL)
@@ -30,8 +20,31 @@ class Payment(
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
     var receiver: User,
-)
-//{
+) : AuditableEntity()
+{
 //    @Version
 //    private val version: Long = 0
-//}
+
+    @PrePersist
+    fun prePersist() {
+        println("prePersist")
+        createdAt = Instant.now()
+        // createdBy = SecurityContext.getCurrentUser()
+    }
+
+    @PreUpdate
+    fun preUpdate() {
+        println("preUpdate")
+        updatedAt = Instant.now()
+        // createdBy = SecurityContext.getCurrentUser()
+    }
+}
+
+@MappedSuperclass
+abstract class AuditableEntity {
+    var createdAt: Instant? = null
+    var createdBy: String? = null
+
+    var updatedAt: Instant? = null
+    var updatedBy: String?= null
+}
