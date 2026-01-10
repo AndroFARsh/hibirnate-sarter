@@ -15,10 +15,11 @@ fun main() {
         sessionFactory.fillDatabase()
         sessionFactory.openSession().use { session ->
             // set read only for all entities app level
-            session.isDefaultReadOnly = true
+//            session.isDefaultReadOnly = true
             // set read only for Payment entity app level
 //            session.setReadOnly(Payment::class.java, true)
             session.beginTransaction()
+            session.createNativeQuery("SET TRANSACTION READ ONLY", Any::class.java).executeUpdate()
 
             val payments = session.createQuery("select p from Payment p", Payment::class.java)
                 //.setReadOnly(true)
