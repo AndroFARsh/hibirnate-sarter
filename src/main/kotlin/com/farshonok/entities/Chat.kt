@@ -14,6 +14,8 @@ data class Chat(
     val id: Long = 0,
     @Column(nullable = false, unique = true)
     val name: String,
+
+    var usersInChat: Int = 0,
 ) {
     @OneToMany(mappedBy = "chat")
     var userChats: MutableList<UserChat> = mutableListOf()

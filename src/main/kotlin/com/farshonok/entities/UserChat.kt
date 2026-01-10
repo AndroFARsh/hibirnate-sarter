@@ -1,6 +1,8 @@
 package com.farshonok.entities
 
+import com.farshonok.listeners.UserChatListeners
 import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -9,6 +11,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 
 @Entity
+@EntityListeners(UserChatListeners::class)
 data class UserChat(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

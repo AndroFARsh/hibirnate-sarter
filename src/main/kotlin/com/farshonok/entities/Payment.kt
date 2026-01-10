@@ -27,24 +27,16 @@ class Payment(
 
     @PrePersist
     fun prePersist() {
-        println("prePersist")
+        println("Payment::prePersist")
         createdAt = Instant.now()
         // createdBy = SecurityContext.getCurrentUser()
     }
 
     @PreUpdate
     fun preUpdate() {
-        println("preUpdate")
+        println("Payment::preUpdate")
         updatedAt = Instant.now()
         // createdBy = SecurityContext.getCurrentUser()
     }
 }
 
-@MappedSuperclass
-abstract class AuditableEntity {
-    var createdAt: Instant? = null
-    var createdBy: String? = null
-
-    var updatedAt: Instant? = null
-    var updatedBy: String?= null
-}
