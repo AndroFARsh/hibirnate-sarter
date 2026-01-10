@@ -1,6 +1,7 @@
 package com.farshonok.utils
 
 import com.farshonok.convertes.BirthdayConverter
+import com.farshonok.entities.Audit
 import com.farshonok.entities.Chat
 import com.farshonok.entities.Company
 import com.farshonok.entities.Payment
@@ -17,6 +18,7 @@ fun createSessionFactory(builder: Configuration.()-> Unit = {}): SessionFactory 
     config.addAnnotatedClass(User::class.java)
     config.addAnnotatedClass(Company::class.java)
     config.addAnnotatedClass(Payment::class.java)
+    config.addAnnotatedClass(Audit::class.java)
 
     config.physicalNamingStrategy = PhysicalNamingStrategySnakeCaseImpl()
 
