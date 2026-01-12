@@ -12,7 +12,10 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1'
+
     implementation 'org.hibernate:hibernate-core:7.1.11.Final'
+    implementation 'org.hibernate:hibernate-envers:7.1.11.Final'
     implementation 'io.hypersistence:hypersistence-utils-hibernate-71:3.13.2'
 
     implementation 'org.slf4j:slf4j-api:2.0.17'

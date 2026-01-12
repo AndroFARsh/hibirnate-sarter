@@ -1,12 +1,7 @@
 package com.farshonok.utils
 
 import com.farshonok.convertes.BirthdayConverter
-import com.farshonok.entities.Audit
-import com.farshonok.entities.Chat
-import com.farshonok.entities.Company
-import com.farshonok.entities.Payment
-import com.farshonok.entities.User
-import com.farshonok.entities.UserChat
+import com.farshonok.entities.*
 import com.farshonok.interceptor.GlobalInterceptor
 import org.hibernate.SessionFactory
 import org.hibernate.boot.model.naming.PhysicalNamingStrategySnakeCaseImpl
@@ -20,6 +15,7 @@ fun createSessionFactory(builder: Configuration.()-> Unit = {}): SessionFactory 
     config.addAnnotatedClass(Company::class.java)
     config.addAnnotatedClass(Payment::class.java)
     config.addAnnotatedClass(Audit::class.java)
+    config.addAnnotatedClass(Revision::class.java)
     config.interceptor = GlobalInterceptor()
 
     config.physicalNamingStrategy = PhysicalNamingStrategySnakeCaseImpl()

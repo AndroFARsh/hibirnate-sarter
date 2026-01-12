@@ -3,12 +3,6 @@ package com.farshonok
 import com.farshonok.entities.Payment
 import com.farshonok.utils.createSessionFactory
 import com.farshonok.utils.fillDatabase
-import jakarta.persistence.LockModeType
-import jakarta.persistence.QueryHint
-import org.hibernate.LockMode
-import org.hibernate.jpa.AvailableHints
-import org.hibernate.jpa.LegacySpecHints.HINT_JAVAEE_LOCK_TIMEOUT
-import org.hibernate.jpa.QueryHints
 
 fun main() {
     createSessionFactory().use { sessionFactory ->

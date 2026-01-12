@@ -4,8 +4,6 @@ import com.farshonok.entities.Payment
 import com.farshonok.utils.createSessionFactory
 import com.farshonok.utils.fillDatabase
 import jakarta.persistence.LockModeType
-import org.hibernate.LockMode
-import org.hibernate.jpa.LegacySpecHints.HINT_JAVAEE_LOCK_TIMEOUT
 import org.hibernate.jpa.SpecHints.HINT_SPEC_LOCK_TIMEOUT
 
 fun main() {

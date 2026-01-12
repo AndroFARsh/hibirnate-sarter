@@ -8,10 +8,13 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.BatchSize
+import org.hibernate.envers.Audited
+import org.hibernate.envers.NotAudited
 
 @Entity
 @Table(name = "company", schema = "public")
 //@BatchSize(size = 5)
+@Audited
 data class Company(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,7 @@ data class Company(
 ) {
 
     // extract from constructor to perevent toString, equal, hashCOde exception
+    @NotAudited
     @OneToMany(mappedBy = "company")
     var users: MutableList<User> = mutableListOf()
 }
