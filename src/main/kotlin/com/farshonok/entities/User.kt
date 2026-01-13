@@ -71,6 +71,7 @@ class User(
 
     @OneToMany(mappedBy = "receiver")
     @Fetch(FetchMode.SUBSELECT)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     val payments: MutableList<Payment> = mutableListOf()
 }
 

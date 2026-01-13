@@ -1,6 +1,8 @@
 package com.farshonok.entities
 
 import jakarta.persistence.*
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.OptimisticLockType
 import org.hibernate.annotations.OptimisticLocking
@@ -12,6 +14,7 @@ import java.time.Instant
 @OptimisticLocking(type = OptimisticLockType.ALL)
 @DynamicUpdate
 @Audited
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 class Payment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

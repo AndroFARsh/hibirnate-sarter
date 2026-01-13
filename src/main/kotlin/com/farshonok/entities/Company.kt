@@ -21,5 +21,6 @@ data class Company(
 
     // extract from constructor to perevent toString, equal, hashCOde exception
     @OneToMany(mappedBy = "company")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     var users: MutableList<User> = mutableListOf()
 }
