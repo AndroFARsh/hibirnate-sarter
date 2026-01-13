@@ -7,7 +7,7 @@ import com.farshonok.utils.fillDatabase
 
 fun main() {
     createSessionFactory().use { sessionFactory ->
-        sessionFactory.fillDatabase()
+//        sessionFactory.fillDatabase()
 
         var user: User? = null
         sessionFactory.openSession().use { session ->
@@ -34,5 +34,9 @@ fun main() {
 
             session.transaction.commit()
         }
+
+        println(sessionFactory.statistics.getCacheRegionStatistics("Users"))
+        println(sessionFactory.statistics)
+
     }
 }
