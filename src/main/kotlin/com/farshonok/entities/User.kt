@@ -18,6 +18,8 @@ import org.hibernate.Session
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.FetchProfile
+import org.hibernate.envers.Audited
+import org.hibernate.envers.NotAudited
 import org.hibernate.graph.RootGraph
 
 @NamedEntityGraph(
@@ -40,6 +42,7 @@ import org.hibernate.graph.RootGraph
 )
 @Entity
 @Table(name = "users", schema = "public")
+@Audited
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,6 +61,7 @@ data class User(
 ) {
     @OneToMany(mappedBy = "user")
     @Fetch(FetchMode.SUBSELECT)
+    @NotAudited
     val userChats: MutableList<UserChat> = mutableListOf()
 
     @OneToMany(mappedBy = "receiver")

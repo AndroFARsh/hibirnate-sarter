@@ -22,7 +22,6 @@ class Payment(
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
-    @NotAudited
     var receiver: User,
 ) : AuditableEntity()
 {

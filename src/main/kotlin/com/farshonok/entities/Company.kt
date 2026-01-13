@@ -25,7 +25,6 @@ data class Company(
 ) {
 
     // extract from constructor to perevent toString, equal, hashCOde exception
-    @NotAudited
     @OneToMany(mappedBy = "company")
     var users: MutableList<User> = mutableListOf()
 }
