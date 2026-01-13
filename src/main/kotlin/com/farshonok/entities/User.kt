@@ -15,6 +15,8 @@ import jakarta.persistence.NamedSubgraph
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.Session
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
 import org.hibernate.annotations.FetchProfile
@@ -43,7 +45,8 @@ import org.hibernate.graph.RootGraph
 @Entity
 @Table(name = "users", schema = "public")
 @Audited
-data class User(
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Users")
+class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
@@ -57,11 +60,13 @@ data class User(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
-    var company: Company,
+    var company: Company
 ) {
+
     @OneToMany(mappedBy = "user")
     @Fetch(FetchMode.SUBSELECT)
     @NotAudited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     val userChats: MutableList<UserChat> = mutableListOf()
 
     @OneToMany(mappedBy = "receiver")

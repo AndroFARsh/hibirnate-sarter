@@ -9,9 +9,12 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
 
 @Entity
 @EntityListeners(UserChatListeners::class)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 data class UserChat(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

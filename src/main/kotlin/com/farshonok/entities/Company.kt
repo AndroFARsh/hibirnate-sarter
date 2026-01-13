@@ -1,20 +1,15 @@
 package com.farshonok.entities
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
-import org.hibernate.annotations.BatchSize
+import jakarta.persistence.*
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.hibernate.envers.Audited
-import org.hibernate.envers.NotAudited
 
 @Entity
 @Table(name = "company", schema = "public")
 //@BatchSize(size = 5)
 @Audited
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 data class Company(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

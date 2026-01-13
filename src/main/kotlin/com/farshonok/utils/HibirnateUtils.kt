@@ -9,6 +9,7 @@ import org.hibernate.cfg.Configuration
 
 fun createSessionFactory(builder: Configuration.()-> Unit = {}): SessionFactory {
     val config = Configuration()
+
     config.addAnnotatedClass(UserChat::class.java)
     config.addAnnotatedClass(Chat::class.java)
     config.addAnnotatedClass(User::class.java)

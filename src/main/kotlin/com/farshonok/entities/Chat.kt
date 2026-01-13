@@ -6,8 +6,11 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 data class Chat(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +21,7 @@ data class Chat(
     var usersInChat: Int = 0,
 ) {
     @OneToMany(mappedBy = "chat")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     var userChats: MutableList<UserChat> = mutableListOf()
 }
 
