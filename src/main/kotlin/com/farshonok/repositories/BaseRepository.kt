@@ -27,8 +27,8 @@ abstract class BaseRepository<K : Serializable, E>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun findById(id: K): Optional<E> =
-        Optional.ofNullable(entityManager.find(clazz, id)) as Optional<E>
+    override fun findById(id: K, properties: Map<String, String>): Optional<E> =
+        Optional.ofNullable(entityManager.find(clazz, id, properties)) as Optional<E>
 
     override fun findAll(): List<E> {
         val criteria = entityManager.criteriaBuilder.createQuery(clazz)

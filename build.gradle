@@ -18,6 +18,8 @@ dependencies {
     implementation 'org.hibernate:hibernate-envers:7.1.11.Final'
     implementation 'io.hypersistence:hypersistence-utils-hibernate-71:3.13.2'
 
+    implementation 'net.bytebuddy:byte-buddy:1.18.3'
+
     implementation 'org.hibernate:hibernate-jcache:7.1.11.Final'
     implementation 'org.ehcache:ehcache:3.10.8:jakarta'
 
