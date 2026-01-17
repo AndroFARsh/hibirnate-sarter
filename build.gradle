@@ -20,6 +20,10 @@ dependencies {
 
     implementation 'net.bytebuddy:byte-buddy:1.18.3'
 
+    implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.3.Final'
+    implementation 'org.glassfish:jakarta.el:4.0.2'
+
     implementation 'org.hibernate:hibernate-jcache:7.1.11.Final'
     implementation 'org.ehcache:ehcache:3.10.8:jakarta'
 
@@ -55,4 +59,6 @@ test {
 
 kotlin {
     jvmToolchain(22)
+}
+compileKotlin {
 }

@@ -8,10 +8,12 @@ import com.farshonok.dto.mappers.UserReanMapper
 import com.farshonok.entities.User
 import com.farshonok.repositories.UserRepository
 import jakarta.transaction.Transactional
+import jakarta.validation.Validator
 import java.util.*
 
 open class UserService(
     val userRepository: UserRepository,
+    val validator: Validator,
     val userReadMapper: UserReanMapper,//Mapper<User, UserReadDto>,
     val userCreateMapper: UserCreateMapper,//Mapper<UserCreateDto, User>
 ) {
@@ -29,8 +31,10 @@ open class UserService(
 
     @Transactional
     open fun create(user: UserCreateDto): Long {
-        // validate
-        // map
+        val validationResult  = validator.validate(user)
+        if (!validationResult.isEmpty()) {
+            throw RuntimeException("UserCreateDto is not valid: $validationResult")
+        }
         val entity = userCreateMapper.map(user)
         return userRepository.save(entity).id
     }

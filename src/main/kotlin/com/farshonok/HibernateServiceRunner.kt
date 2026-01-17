@@ -4,23 +4,26 @@ import com.farshonok.dto.UserCreateDto
 import com.farshonok.dto.mappers.CompanyReadMapper
 import com.farshonok.dto.mappers.UserCreateMapper
 import com.farshonok.dto.mappers.UserReanMapper
-import com.farshonok.entities.Birthday
 import com.farshonok.interceptor.TransactionInterceptor
 import com.farshonok.repositories.CompanyRepository
 import com.farshonok.repositories.UserRepository
 import com.farshonok.services.UserService
 import com.farshonok.utils.createSessionFactory
 import com.farshonok.utils.proxyCurrentSession
+import jakarta.validation.Validation
+import jakarta.validation.Validator
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.implementation.MethodDelegation
 import net.bytebuddy.matcher.ElementMatchers
 import java.time.LocalDate
 import java.time.Month
-import kotlin.String
 
 fun main() {
     createSessionFactory().use { sessionFactory ->
         //sessionFactory.fillDatabase()
+        val validatorFactory = Validation.buildDefaultValidatorFactory()
+        val validator: Validator = validatorFactory.validator
+
         val session = sessionFactory.proxyCurrentSession()
         val transactionInterceptor = TransactionInterceptor(session)
 
@@ -40,12 +43,12 @@ fun main() {
             .make()
             .load(UserService::class.java.classLoader)
             .loaded
-            .getDeclaredConstructor(UserRepository::class.java, UserReanMapper::class.java, UserCreateMapper::class.java)
-            .newInstance(userRepository, userReadMapper, userCreateMapper)
+            .declaredConstructors[0]
+            .newInstance(userRepository, validator, userReadMapper, userCreateMapper) as UserService
 
         val userId = userService.create(
             UserCreateDto(
-                email = "a11@gmail.com",
+                email = "a11_gmail.com",
                 firstName = "Anton11",
                 lastName = "K11",
                 birthDay = LocalDate.of(1985, Month.APRIL, 1),
